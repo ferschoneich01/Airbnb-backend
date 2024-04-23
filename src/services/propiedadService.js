@@ -11,7 +11,7 @@ const getPropiedades = async () => {
         const database = client.db('airbnb');
         const collection = database.collection('propiedades');
 
-        const result = await collection.find({}).toArray();
+        const result = await collection.find({ estado: 1 }).toArray();
 
         return {
             status: 200,
@@ -50,7 +50,8 @@ const AddPropiedad = async (propiedadData) => {
             cantidad_banos: propiedadData.cantidad_banos,
             precio_por_noche: propiedadData.precio_por_noche,
             img: propiedadData.img,
-            amenidad_id: propiedadData.amenidad_id
+            amenidad_id: propiedadData.amenidad_id,
+            estado: 1
         };
 
         // Insertar la propiedad en la colección
@@ -159,16 +160,9 @@ const deletePropiedad = async (id) => {
         const uri = 'mongodb+srv://pablodouglass1:1jzP9a3MgDZSVag4@cluster0.bx8g3o5.mongodb.net/?retryWrites=true&w=majority';
         client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
         await client.connect();
-
-        const result = await client.db('airbnb').collection('Propiedades').deleteOne({ _id: id }); // Usar directamente el ID proporcionado
-
-        if (result.deletedCount === 0) {
-            return {
-                status: 404,
-                message: `No document found with ID: ${id}.`
-            };
-        }
-
+        console.log(id);
+        const result = await client.db('airbnb').collection('propiedades').updateOne({ _id: id }, { $set: { estado: 0 } }); // Usar directamente el ID proporcionado
+        console.log(result)
         return {
             status: 200,
             message: `Listing with ID ${id} has been deleted successfully`

@@ -11,7 +11,7 @@ const getClientes = async () => {
         const database = client.db('airbnb');
         const collection = database.collection('clientes');
 
-        const result = await collection.find({}).toArray();
+        const result = await collection.find({ estado: 1 }).toArray();
 
         return {
             status: 200,
@@ -69,6 +69,42 @@ const addCliente = async (listingData) => {
         return {
             status: 500,
             message: 'Error interno del servidor'
+        };
+    } finally {
+        if (client) {
+            await client.close();
+        }
+    }
+};
+
+const findClienteById = async (id) => {
+    let client;
+    try {
+        const uri = 'mongodb+srv://pablodouglass1:1jzP9a3MgDZSVag4@cluster0.bx8g3o5.mongodb.net/?retryWrites=true&w=majority';
+        client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        await client.connect();
+
+        const database = client.db('airbnb');
+        const collection = database.collection('clientes');
+
+        const result = await collection.findOne({ _id: id });
+
+        if (!result) {
+            return {
+                status: 404,
+                message: `No listing found with username: ${usuario}`
+            };
+        }
+
+        return {
+            status: 200,
+            data: result
+        };
+    } catch (error) {
+        console.error('Error en el servicio findOne:', error);
+        return {
+            status: 500,
+            message: 'Internal Server Error'
         };
     } finally {
         if (client) {
@@ -158,13 +194,14 @@ const updateCliente = async (id, updatedData) => {
 };
 
 const deleteCliente = async (id) => {
+    console.log(id);
     let client;
     try {
         const uri = 'mongodb+srv://pablodouglass1:1jzP9a3MgDZSVag4@cluster0.bx8g3o5.mongodb.net/?retryWrites=true&w=majority';
         client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
         await client.connect();
 
-        const result = await client.db('airbnb').collection('clientes').deleteOne({ _id: id }); // Usar directamente el ID proporcionado
+        const result = await client.db('airbnb').collection('clientes').updateOne({ _id: id }, { $set: { estado: 0 } }); // Usar directamente el ID proporcionado
 
         if (result.deletedCount === 0) {
             return {
@@ -195,5 +232,6 @@ module.exports = {
     findUsuarioCliente,
     updateCliente,
     deleteCliente,
-    getClientes
+    getClientes,
+    findClienteById
 };

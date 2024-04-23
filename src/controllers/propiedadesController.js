@@ -58,7 +58,7 @@ const updatePropiedad = async (req, res) => {
 const deletePropiedad = async (req, res) => {
     try {
         const { id } = req.params;
-        const result = await service.deleteListing(id);
+        const result = await service.deletePropiedad(id);
         res.json(result);
     } catch (error) {
         res.status(500).json({ error: error.message });

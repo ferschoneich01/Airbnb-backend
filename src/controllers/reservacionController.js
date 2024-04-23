@@ -71,7 +71,8 @@ const updateReservacion = async (req, res) => {
 const deleteReservacion = async (req, res) => {
     try {
         const { id } = req.params;
-        const result = await service.deleteReservacion(id);
+        console.log({ id });
+        const result = await service.deleteReservacion({ id });
         if (result.status === 200) {
             res.json({ status: 'Ok', message: `Listing with ID ${id} has been updated successfully` });
         } else {

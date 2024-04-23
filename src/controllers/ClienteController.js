@@ -30,6 +30,20 @@ const addCliente = async (req, res) => {
     }
 };
 
+const findClienteById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await service.findClienteById(id);
+        if (result.status === 200) {
+            res.send({ status: 'Ok', data: result.data });
+        } else {
+            res.status(result.status).send({ status: 'Error', message: result.message });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 const findUsuarioCliente = async (req, res) => {
     try {
         const { usuario } = req.params;
@@ -74,6 +88,7 @@ module.exports = {
     addCliente,
     findUsuarioCliente,
     updateCliente,
-    deleteCliente
+    deleteCliente,
+    findClienteById
 
 };

@@ -59,6 +59,19 @@ const AddReservacion = async (listingData) => {
             estado_reserva: listingData.estado_reserva
         };
 
+        const pago = {
+            _id: Math.floor(Math.random() * 1000000000).toString(),
+            reserva_id: listing._id,
+            metodo_pago: "Tarjeta de Crédito",
+            monto_pagado: listingData.monto_pago,
+            estado_pago: "completado",
+            fecha_pago: obtenerFechaActual(),
+            numero_tarjeta: listingData.numero_tarjeta
+
+        }
+
+        const resultPago = await database.collection('pagos').insertOne(pago);
+
         const result = await collection.insertOne(listing);
 
         return {
@@ -66,7 +79,7 @@ const AddReservacion = async (listingData) => {
             data: result
         };
     } catch (error) {
-        console.error('Error al inserta ubicacion:', error);
+        console.error('Error al inserta reserva:', error);
         return {
             status: 500,
             message: 'Error interno del servidor'
@@ -76,6 +89,15 @@ const AddReservacion = async (listingData) => {
             await client.close();
         }
     }
+};
+
+const obtenerFechaActual = () => {
+    const fechaActual = new Date();
+    const dia = fechaActual.getDate().toString().padStart(2, '0');
+    const mes = (fechaActual.getMonth() + 1).toString().padStart(2, '0');
+    const año = fechaActual.getFullYear();
+
+    return `${año}-${mes}-${dia}`;
 };
 
 const findReservacionByUser = async (id) => {
@@ -196,13 +218,15 @@ const updateReservacion = async (id) => {
 };
 
 const deleteReservacion = async (id) => {
+    console.log(id.id);
+
     let client;
     try {
         const uri = 'mongodb+srv://pablodouglass1:1jzP9a3MgDZSVag4@cluster0.bx8g3o5.mongodb.net/?retryWrites=true&w=majority';
         client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
         await client.connect();
 
-        const result = await client.db('airbnb').collection('Reservaciones').updateOne({ _id: id }, { estado_reserva: "cancelada" }); // Usar directamente el ID proporcionado
+        const result = await client.db('airbnb').collection('Reservaciones').updateOne({ _id: id.id }, { $set: { estado_reserva: "cancelada" } }); // Usar directamente el ID proporcionado
 
         // Verificar si se actualizó algún documento
         if (result.modifiedCount === 0) {
