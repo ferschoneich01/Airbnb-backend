@@ -41,8 +41,8 @@ const findReservacionByUser = async (req, res) => {
 
 const findReservacion = async (req, res) => {
     try {
-        const { username } = req.params;
-        const result = await service.findOne(username);
+        const { id } = req.params;
+        const result = await service.findReservacion(id);
         if (result.status === 200) {
             res.send({ status: 'Ok', data: result.data });
         } else {
