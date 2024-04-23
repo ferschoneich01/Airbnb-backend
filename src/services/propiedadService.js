@@ -42,7 +42,7 @@ const AddPropiedad = async (propiedadData) => {
 
         // Crear el documento de propiedad con la estructura proporcionada
         const propiedad = {
-            _id: propiedadData._id,
+            _id: Math.floor(Math.random() * 1000000000).toString(),
             ubicacion_id: propiedadData.ubicacion_id,
             propietarios: propiedadData.propietarios,
             descripcion: propiedadData.descripcion,
@@ -58,7 +58,7 @@ const AddPropiedad = async (propiedadData) => {
 
         return {
             status: 201,
-            data: result.ops[0]
+            data: result
         };
     } catch (error) {
         console.error('Error al insertar la propiedad:', error);

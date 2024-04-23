@@ -15,7 +15,18 @@ const getAmenidadById = async (req, res) => {
     }
 };
 
+const AddAmenidad = async (req, res) => {
+    try {
+        const listing = req.body;
+        const result = await service.AddAmenidad(listing);
+        res.status(201).json(result);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 module.exports = {
-    getAmenidadById
+    getAmenidadById,
+    AddAmenidad
 
 };

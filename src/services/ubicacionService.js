@@ -5,11 +5,6 @@ const addUbicacion = async (listingData) => {
 
     let client;
     try {
-        // Verificar si listingData es un objeto y tiene todas las propiedades requeridas
-        if (!listingData || typeof listingData !== 'object' || !listingData.nombres || !listingData.apellidos || !listingData.usuario || !listingData.clave || typeof listingData.estado === 'undefined' || !listingData.rol) {
-            throw new Error('Los datos del cliente son inválidos');
-        }
-
         const uri = 'mongodb+srv://pablodouglass1:1jzP9a3MgDZSVag4@cluster0.bx8g3o5.mongodb.net/?retryWrites=true&w=majority';
         client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
         await client.connect();
@@ -25,15 +20,15 @@ const addUbicacion = async (listingData) => {
             detalle: listingData.detalle
 
         };
-
+        console.log(listing);
         const result = await collection.insertOne(listing);
 
         return {
             status: 201,
-            data: "Registro insertado" + result
+            data: listing._id
         };
     } catch (error) {
-        console.error('Error en el servicio addCliente:', error);
+        console.error('Error en el servicio addUbicacion:', error);
         return {
             status: 500,
             message: 'Error interno del servidor'

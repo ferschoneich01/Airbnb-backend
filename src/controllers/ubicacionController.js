@@ -17,7 +17,8 @@ const getUbicaciones = async (req, res) => {
 const AddUbicacion = async (req, res) => {
     try {
         const listing = req.body;
-        const result = await service.AddUbicacion(listing);
+        console.log(listing);
+        const result = await service.addUbicacion(listing);
         res.status(201).json(result);
     } catch (error) {
         res.status(500).json({ error: error.message });
